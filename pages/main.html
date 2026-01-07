@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LanguagePro - Школа иностранных языков</title>
+    <link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <h1>LanguagePro</h1>
+                <p class="tagline">Изучай языки, открывай мир</p>
+            </div>
+            <nav class="nav">
+                <a href="#courses-section" class="nav-link">Курсы</a>
+                <a href="#tutors-section" class="nav-link">Репетиторы</a>
+                <a href="cabinet.html" class="nav-link">Мой кабинет</a>
+                <button class="btn-logout" onclick="logout()">Выход</button>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<main>
+    <!-- Уведомления -->
+    <div id="notification" class="notification hidden"></div>
+
+    <!-- Описание школы -->
+    <section class="hero">
+        <div class="container">
+            <h2>Добро пожаловать в LanguagePro!</h2>
+            <p>Мы помогаем студентам изучать иностранные языки с профессиональными преподавателями и репетиторами мирового уровня.</p>
+            <p><strong>Наша миссия:</strong> сделать изучение языков доступным, эффективным и интересным для каждого.</p>
+        </div>
+    </section>
+
+    <!-- Преимущества -->
+    <section class="advantages">
+        <div class="container">
+            <h2>Почему выбирают LanguagePro?</h2>
+            <div class="advantages-grid">
+                <div class="advantage-card">
+                    <h3>🎓 Профессиональные учителя</h3>
+                    <p>Опытные преподаватели с международными сертификатами</p>
+                </div>
+                <div class="advantage-card">
+                    <h3>💬 Практика разговорной речи</h3>
+                    <p>Интенсивные занятия для развития навыков общения</p>
+                </div>
+                <div class="advantage-card">
+                    <h3>📅 Гибкое расписание</h3>
+                    <p>Выбирайте время занятий, которое вам удобно</p>
+                </div>
+                <div class="advantage-card">
+                    <h3>💰 Доступные цены</h3>
+                    <p>Различные пакеты и скидки для групповых занятий</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Курсы -->
+    <section class="courses-section" id="courses-section">
+        <div class="container">
+            <h2>Доступные курсы</h2>
+
+            <div class="search-courses">
+                <input type="text" id="courseSearch" placeholder="Поиск по названию...">
+                <select id="levelFilter">
+                    <option value="">Все уровни</option>
+                    <option value="Beginner">Начинающий</option>
+                    <option value="Intermediate">Средний</option>
+                    <option value="Advanced">Продвинутый</option>
+                </select>
+            </div>
+
+            <div id="coursesTableContainer" class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                    <tr>
+                        <th>Название</th>
+                        <th>Уровень</th>
+                        <th>Преподаватель</th>
+                        <th>Часов в неделю</th>
+                        <th>Стоимость/час</th>
+                        <th>Действие</th>
+                    </tr>
+                    </thead>
+                    <tbody id="coursesBody">
+                    <tr><td colspan="6" class="empty-message">Загрузка курсов...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="emptyCoursesMessage" class="empty-message hidden">
+                К сожалению, доступных курсов пока нет ☹️
+            </div>
+
+            <nav aria-label="Page navigation" id="coursesPagination" class="pagination">
+                <!-- Пагинация будет добавлена JS -->
+            </nav>
+        </div>
+    </section>
+
+    <!-- Репетиторы -->
+    <section class="tutors-section" id="tutors-section">
+        <div class="container">
+            <h2>Найти репетитора</h2>
+
+            <div class="tutors-filter">
+                <select id="languageFilter">
+                    <option value="">Все языки</option>
+                    <option value="English">Английский</option>
+                    <option value="Spanish">Испанский</option>
+                    <option value="French">Французский</option>
+                    <option value="German">Немецкий</option>
+                    <option value="Russian">Русский</option>
+                </select>
+
+                <select id="levelTutorFilter">
+                    <option value="">Все уровни</option>
+                    <option value="Beginner">Начинающий</option>
+                    <option value="Intermediate">Средний</option>
+                    <option value="Advanced">Продвинутый</option>
+                </select>
+
+                <input type="number" id="experienceFilter" placeholder="Опыт (лет)" min="0" max="50">
+            </div>
+
+            <div id="tutorsTableContainer" class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                    <tr>
+                        <th>Имя</th>
+                        <th>Язык</th>
+                        <th>Уровень</th>
+                        <th>Опыт (лет)</th>
+                        <th>Ставка (₽/ч)</th>
+                        <th>Действие</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tutorsBody">
+                    <tr><td colspan="6" class="empty-message">Загрузка репетиторов...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="emptyTutorsMessage" class="empty-message hidden">
+                Репетиторы не найдены ☹️
+            </div>
+
+            <nav aria-label="Page navigation" id="tutorsPagination" class="pagination">
+                <!-- Пагинация будет добавлена JS -->
+            </nav>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2025 LanguagePro. Все права защищены.</p>
+        <p>Контакты: <strong>info@languagepro.ru</strong> | Тел: <strong>+7 (999) 123-45-67</strong></p>
+        <div class="social-links">
+            <a href="#" class="social-link">Facebook</a>
+            <a href="#" class="social-link">Instagram</a>
+            <a href="#" class="social-link">VK</a>
+        </div>
+    </div>
+</footer>
+
+<script src="../scripts/api-config.js"></script>
+<script src="../scripts/main.js"></script>
+</body>
+</html>

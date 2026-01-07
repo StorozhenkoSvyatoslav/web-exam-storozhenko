@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой кабинет - LanguagePro</title>
+    <link rel="stylesheet" href="../styles/cabinet.css">
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <h1>LanguagePro</h1>
+            </div>
+            <nav class="nav">
+                <a href="main.html" class="nav-link">На главную</a>
+                <button class="btn-logout" onclick="logout()">Выход</button>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<main>
+    <!-- Уведомления -->
+    <div id="notification" class="notification hidden"></div>
+
+    <section class="cabinet">
+        <div class="container">
+            <h1>Личный кабинет</h1>
+            <p class="welcome">Добро пожаловать! Здесь вы можете управлять своими заявками на курсы и занятия с репетиторами.</p>
+
+            <!-- Таблица заявок -->
+            <div id="ordersTableContainer" class="table-wrapper">
+                <h2>Ваши заявки</h2>
+                <table class="data-table">
+                    <thead>
+                    <tr>
+                        <th>№ п/п</th>
+                        <th>Курс/Репетитор</th>
+                        <th>Дата начала</th>
+                        <th>Время</th>
+                        <th>Продолжительность</th>
+                        <th>Стоимость (₽)</th>
+                        <th>Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody id="ordersBody">
+                    <tr><td colspan="7" class="empty-message">Загрузка заявок...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="emptyOrdersMessage" class="empty-message hidden">
+                <p>У вас пока нет заявок ☹️</p>
+                <a href="main.html" class="btn-primary">Поискать курсы</a>
+            </div>
+
+            <nav aria-label="Page navigation" id="ordersPagination" class="pagination">
+                <!-- Пагинация будет добавлена JS -->
+            </nav>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2025 LanguagePro</p>
+    </div>
+</footer>
+
+<!-- Модальное окно для просмотра деталей заявки -->
+<div id="detailsModal" class="modal hidden">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Детали заявки</h2>
+            <button class="modal-close" onclick="closeModal('detailsModal')">&times;</button>
+        </div>
+        <div class="modal-body" id="detailsModalBody">
+            <!-- Содержимое будет вставлено JS -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeModal('detailsModal')">Закрыть</button>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно для редактирования заявки -->
+<div id="editModal" class="modal hidden">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Редактирование заявки</h2>
+            <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="editForm">
+                <div class="form-group">
+                    <label>Дата начала</label>
+                    <input type="date" id="editDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Время начала</label>
+                    <input type="time" id="editTime" required>
+                </div>
+                <div class="form-group">
+                    <label>Количество студентов</label>
+                    <input type="number" id="editPersons" min="1" max="20" required>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeModal('editModal')">Отмена</button>
+            <button class="btn-primary" onclick="saveOrder()">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно подтверждения удаления -->
+<div id="deleteConfirmModal" class="modal hidden">
+    <div class="modal-content modal-small">
+        <div class="modal-header">
+            <h2>Подтверждение удаления</h2>
+        </div>
+        <div class="modal-body">
+            <p>Вы уверены, что хотите удалить эту заявку?</p>
+            <p class="warning">Это действие нельзя отменить.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeModal('deleteConfirmModal')">Отмена</button>
+            <button class="btn-danger" onclick="confirmDelete()">Удалить</button>
+        </div>
+    </div>
+</div>
+
+<script src="../scripts/api-config.js"></script>
+<script src="../scripts/cabinet.js"></script>
+</body>
+</html>
