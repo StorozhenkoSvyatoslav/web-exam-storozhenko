@@ -1,406 +1,74 @@
-/* Переменные и базовые стили */
-:root{
-  --primary: #0066CC;
-  --success: #17A2B8;
-  --warning: #FFC107;
-  --danger: #DC3545;
-  --page-bg: #F5F5F5;
-  --text: #333333;
-  --muted: #666666;
-  --borders: #DDDDDD;
-  --font-size: 14px;
-  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-html,body{
-  height:100%;
-}
-
-body{
-  margin:0;
-  font-family: var(--font-family);
-  font-size: var(--font-size);
-  color: var(--text);
-  background: var(--page-bg);
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-}
-
-/* Header */
-.site-header{
-  background: var(--primary);
-  color: #ffffff;
-  padding: 15px 0;
-}
-.site-header .container{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:20px;
-}
-.site-header h1{
-  margin:0;
-  font-size:24px;
-  color:#ffffff;
-  font-weight:700;
-}
-.site-header nav{
-  display:flex;
-  align-items:center;
-  gap:14px;
-}
-.site-header nav a{
-  color:#ffffff;
-  text-decoration:none;
-  margin-right:12px;
-  font-weight:600;
-  opacity:0.95;
-}
-.site-header .btn-logout{
-  background:transparent;
-  color:#ffffff;
-  border:none;
-  padding:6px 10px;
-  cursor:pointer;
-  font-weight:600;
-}
-.site-header .btn-logout:hover{
-  /* при hover — красный акцент или outline */
-  color:#ffffff;
-  outline: 2px solid rgba(220,53,69,0.15);
-  box-shadow: 0 0 0 3px rgba(220,53,69,0.06);
-}
-
-/* Container */
-.container{
-  max-width:1200px;
-  margin:0 auto;
-  padding:0 20px;
-  box-sizing:border-box;
-}
-
-/* Main cabinet section */
-.cabinet{
-  padding:40px 0;
-}
-.cabinet h1{
-  font-size:32px;
-  font-weight:700;
-  color:var(--text);
-  margin:0 0 10px 0;
+/* styles/cabinet.css
+   Специфические стили для страницы кабинета — улучшение визуала
+*/
+/* Основные заголовки и описание */
+.cabinet .container h1{
+  font-size:28px;
+  margin:0 0 6px 0;
 }
 .cabinet .welcome{
-  font-size:16px;
-  color:#666666;
-  margin-bottom:30px;
+  margin:0 0 20px 0;
+  color:#555;
 }
 
-/* Notifications */
-.notification{
-  padding:15px 20px;
-  margin:20px 0;
-  border-radius:4px;
-  background:#D1ECF1;
-  color:#0C5460;
-  border:1px solid #BEE5EB;
-}
-.notification.hidden{
-  display:none;
-}
-
-/* Table of requests */
-.table-wrapper{
-  width:100%;
-  overflow-x:auto; /* горизонтальная прокрутка на мобильных */
-}
-.data-table{
-  width:100%;
-  border-collapse:collapse;
-  background:#ffffff;
-  min-width:700px; /* чтобы на десктопе держать структуру */
-}
-.data-table thead th{
-  background:#F0F0F0;
-  padding:12px;
-  text-align:left;
-  font-weight:700;
-  border-bottom:2px solid var(--primary);
-  color:var(--text);
-}
-.data-table tbody td{
-  padding:12px;
-  border-bottom:1px solid var(--borders);
-  vertical-align:middle;
-  color:var(--text);
-}
-.data-table tbody tr:nth-child(even){
-  background:#F9F9F9;
-}
-.data-table tbody tr:hover{
-  background:#F0F5FF;
-}
-
-/* Actions column (три кнопки рядом) */
-.actions{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  flex-wrap:nowrap; /* держим кнопки рядом в одной ячейке; на мобиле меняем на column */
-}
-.actions .btn{
-  padding:6px 12px;
-  font-size:12px;
-  border:none;
-  border-radius:4px;
-  cursor:pointer;
-  font-weight:600;
-  line-height:1;
-  white-space:nowrap;
-}
-
-/* Specific action buttons */
-.btn-details{
-  background:var(--success);
-  color:#ffffff;
-}
-.btn-details:hover{
-  background:#138496;
-}
-.btn-edit{
-  background:var(--warning);
-  color:#333333;
-}
-.btn-edit:hover{
-  background:#E0A800;
-}
-.btn-delete{
-  background:var(--danger);
-  color:#ffffff;
-}
-.btn-delete:hover{
-  background:#C82333;
-}
-
-/* Modal */
-.modal{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.5);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:1000;
-}
-.modal.hidden{
-  display:none;
-}
-.modal-content{
-  position:relative;
-  background:#ffffff;
-  border-radius:8px;
-  max-width:500px;
-  width:90%;
-  box-shadow:0 4px 20px rgba(0,0,0,0.2);
-  overflow:hidden;
-}
-.modal-header{
-  padding:20px;
-  border-bottom:1px solid var(--borders);
-  position:relative;
-}
-.modal-header h2{
-  margin:0;
+/* Улучшенная верхняя часть таблицы */
+.cabinet h2{
+  margin-top:0;
   font-size:20px;
-  color:var(--text);
-}
-.modal-close{
-  position:absolute;
-  right:15px;
-  top:15px;
-  background:none;
-  border:none;
-  font-size:24px;
-  cursor:pointer;
-  color:#666666;
-}
-.modal-close:hover{
-  color:#000000;
-}
-.modal-body{
-  padding:20px;
-}
-.modal-footer{
-  padding:20px;
-  border-top:1px solid var(--borders);
-  display:flex;
-  justify-content:flex-end;
-  gap:10px;
+  color:var(--text-color);
 }
 
-/* Form in modal */
-.form-group{
-  margin-bottom:15px;
-}
-.form-group label{
-  display:block;
-  margin-bottom:5px;
-  font-weight:700;
-  font-size:14px;
-  color:var(--text);
-}
-.form-group input,
-.form-group select,
-.form-group textarea{
-  width:100%;
-  padding:10px;
-  border:1px solid var(--borders);
-  border-radius:4px;
-  font-size:14px;
-  box-sizing:border-box;
-  background:#fff;
-}
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus{
-  outline:none;
-  border-color:var(--primary);
-  box-shadow:0 0 0 2px rgba(0,102,204,0.2);
-}
+.table-wrapper{border-radius:8px; overflow:hidden; box-shadow: 0 4px 14px rgba(0,0,0,0.06);}
+.data-table thead th{background: linear-gradient(180deg, #f7f9fc, #F0F0F0);}
+.data-table tbody tr td:first-child{width:60px}
 
-/* Pagination */
-.pagination{
-  display:flex;
-  justify-content:center;
-  margin:30px 0;
-  gap:5px;
-  align-items:center;
-}
-.page-item .page-link{
-  padding:8px 12px;
-  border:1px solid var(--primary);
-  background:#ffffff;
-  color:var(--primary);
-  cursor:pointer;
-  border-radius:4px;
-  text-decoration:none;
-  display:inline-block;
-}
-.page-link:hover{
-  background:var(--primary);
-  color:#ffffff;
-}
-.page-item.active .page-link{
-  background:var(--primary);
-  color:#ffffff;
-}
+/* Действия в таблицах — сделать кнопки компактнее */
+.table-actions{display:flex; gap:8px; align-items:center}
+.table-actions .btn{padding:6px 10px; font-weight:600}
 
-/* Empty message */
-.empty-message{
-  text-align:center;
-  padding:40px 20px;
-  color:#999999;
-  font-size:16px;
-}
-td .empty-message{
-  padding:12px;
-  text-align:center;
-  color:#999999;
-  font-size:14px;
-}
+/* Empty state */
+.empty-message{padding:18px; color:#666; display:block;}
+#emptyOrdersMessage .btn-primary{display:inline-block; margin-top:10px}
 
-/* Global buttons */
-.btn{
-  padding:10px 20px;
-  border:none;
-  border-radius:4px;
-  cursor:pointer;
-  font-size:14px;
-  font-weight:700;
-  display:inline-block;
-  text-align:center;
-}
-.btn-primary{
-  background:#28A745;
-  color:#ffffff;
-}
-.btn-primary:hover{
-  background:#218838;
-}
-.btn-secondary{
-  background:#6C757D;
-  color:#ffffff;
-}
-.btn-secondary:hover{
-  background:#5A6268;
-}
-.btn-danger{
-  background:var(--danger);
-  color:#ffffff;
-}
-.btn-danger:hover{
-  background:#C82333;
-}
-.btn-logout{
-  background:transparent;
-  color:#ffffff;
-  border:none;
-  cursor:pointer;
-}
+/* Формы в модальных окнах */
+.form-group{margin-bottom:12px}
+.form-group label{display:block; margin-bottom:6px; color:#444}
+.form-group input, .form-group select, .form-group textarea{width:100%; padding:10px; border:1px solid var(--borders); border-radius:6px; font-size:14px}
 
-/* Footer */
-.site-footer{
-  background:#F0F0F0;
-  padding:30px 0;
-  margin-top:40px;
-  text-align:center;
-  color:#666666;
-  font-size:14px;
-}
-.site-footer .social-links{
-  display:flex;
-  justify-content:center;
-  gap:20px;
-  margin-top:10px;
-}
-.site-footer a{
-  color:var(--primary);
-  text-decoration:none;
-}
+/* Модальные окна */
+.modal{position:fixed; left:0; top:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.45); z-index:2000}
+.modal.hidden{display:none}
+.modal-content{background:var(--white); width:100%; max-width:760px; border-radius:8px; overflow:hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.25)}
+.modal-small{max-width:420px}
+.modal-header{display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--borders)}
+.modal-header h2{margin:0; font-size:18px}
+.modal-close{background:transparent; border:none; font-size:22px; line-height:1; cursor:pointer}
+.modal-body{padding:18px 20px}
+.modal-footer{padding:12px 20px; border-top:1px solid var(--borders); display:flex; gap:10px; justify-content:flex-end}
 
-/* Адаптивность */
-@media (max-width:768px){
-  .modal-content{
-    width:95%;
-  }
-  .site-header .container{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:10px;
-  }
-  .site-header nav{
-    flex-wrap:wrap;
-  }
-  .data-table{
-    min-width:600px;
-  }
+/* Предупреждение в модалке удаления */
+.warning{color:var(--danger-color); font-weight:600}
+
+/* Улучшение кнопок внутри кабинета */
+.btn-primary{border-radius:6px}
+.btn-secondary{border-radius:6px}
+.btn-danger{border-radius:6px}
+
+/* Мелкие правки выравнивания таблицы */
+.data-table tbody td{vertical-align:middle}
+.data-table thead th, .data-table tbody td{padding:14px}
+
+/* Responsive */
+@media (max-width: 768px){
+  .table-wrapper{box-shadow:none}
+  .modal-content{max-width:92%}
 }
 
 @media (max-width:480px){
-  .actions{
-    flex-direction:column; /* кнопки в столбец */
-    align-items:flex-end;
-    gap:6px;
-  }
-  .actions .btn{
-    width:100%;
-    text-align:center;
-  }
-  .data-table{
-    min-width:480px;
-  }
+  .table-actions{flex-direction:column; align-items:flex-start}
+  .data-table thead{display:none}
+  .data-table tbody td{display:block; width:100%; box-sizing:border-box}
+  .data-table tbody tr{display:block; margin-bottom:12px; background:var(--white); border-radius:8px; padding:10px}
+  .data-table tbody td:before{content:attr(data-label); font-weight:700; display:block; color:#444; margin-bottom:6px}
 }
 
-/* ...existing code... */

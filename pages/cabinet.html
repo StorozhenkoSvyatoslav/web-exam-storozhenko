@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Мой кабинет - LanguagePro</title>
+    <link rel="stylesheet" href="../styles/main.css">
     <link rel="stylesheet" href="../styles/cabinet.css">
 </head>
 <body>
@@ -95,16 +96,16 @@
         <div class="modal-body">
             <form id="editForm">
                 <div class="form-group">
-                    <label>Дата начала</label>
-                    <input type="date" id="editDate" required>
+                    <label for="editDate">Дата начала</label>
+                    <input type="date" id="editDate" name="editDate" required>
                 </div>
                 <div class="form-group">
-                    <label>Время начала</label>
-                    <input type="time" id="editTime" required>
+                    <label for="editTime">Время начала</label>
+                    <input type="time" id="editTime" name="editTime" required>
                 </div>
                 <div class="form-group">
-                    <label>Количество студентов</label>
-                    <input type="number" id="editPersons" min="1" max="20" required>
+                    <label for="editPersons">Количество студентов</label>
+                    <input type="number" id="editPersons" name="editPersons" min="1" max="20" required>
                 </div>
             </form>
         </div>
