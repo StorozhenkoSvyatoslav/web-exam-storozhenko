@@ -7,11 +7,12 @@ let selectedTutorId = null;
 let selectedCourseId = null;
 let currentCoursePage = 1;
 let currentTutorPage = 1;
-const ITEMS_PER_PAGE = 5;
+
+const ITEMS_PER_PAGE_LOCAL = (window.API_CONFIG && window.API_CONFIG.ITEMS_PER_PAGE) ? window.API_CONFIG.ITEMS_PER_PAGE : 5; // максимальное количество записей на странице
 
 // Безопасные ссылки на утилиты, если они подключены
 const notify = (window.Utils && typeof window.Utils.showNotification === 'function') ? window.Utils.showNotification : function(msg, type='info') { console.log(type.toUpperCase(), msg); };
-const paginate = (window.Utils && typeof window.Utils.paginateArray === 'function') ? window.Utils.paginateArray : function(arr, page, perPage = ITEMS_PER_PAGE){ if(!Array.isArray(arr)) return []; page = Number(page)||1; perPage = Number(perPage)||ITEMS_PER_PAGE; const start = (page-1)*perPage; return arr.slice(start, start+perPage); };
+const paginate = (window.Utils && typeof window.Utils.paginateArray === 'function') ? window.Utils.paginateArray : function(arr, page, perPage = ITEMS_PER_PAGE_LOCAL){ if(!Array.isArray(arr)) return []; page = Number(page)||1; perPage = Number(perPage)||ITEMS_PER_PAGE_LOCAL; const start = (page-1)*perPage; return arr.slice(start, start+perPage); };
 const createPaginationHtml = (window.Utils && typeof window.Utils.createPagination === 'function') ? window.Utils.createPagination : function(current, total, cb){
   let html = '';
   if (total <= 1) return html;
@@ -26,37 +27,115 @@ const createPaginationHtml = (window.Utils && typeof window.Utils.createPaginati
   return html;
 };
 
-// Определение API_ENDPOINTS с запасным вариантом
-const API_ENDPOINTS = window.API_ENDPOINTS || {
-  courses: (window.API_CONFIG && window.API_CONFIG.baseUrl ? window.API_CONFIG.baseUrl : '') + '/api/courses',
-  tutors: (window.API_CONFIG && window.API_CONFIG.baseUrl ? window.API_CONFIG.baseUrl : '') + '/api/tutors'
-};
+// Определение API_ENDPOINTS: используем window.API_CONFIG если доступен, иначе дефолтный внешний API с api_key
+const DEFAULT_API_BASE = 'http://exam-api-courses.std-900.ist.mospolytech.ru/api';
+const DEFAULT_API_KEY = 'f11c2bed-fc0e-4034-b539-dba80b6521da';
+const API_ENDPOINTS = (window.API_CONFIG && window.API_CONFIG.API_ENDPOINTS) ? window.API_CONFIG.API_ENDPOINTS : (function(){
+  const base = (window.API_CONFIG && window.API_CONFIG.API_BASE) ? window.API_CONFIG.API_BASE : DEFAULT_API_BASE;
+  const key = (window.API_CONFIG && window.API_CONFIG.API_KEY) ? window.API_CONFIG.API_KEY : DEFAULT_API_KEY;
+  return {
+    courses: base + '/courses?api_key=' + key,
+    tutors: base + '/tutors?api_key=' + key,
+    orders: base + '/orders?api_key=' + key,
+    createOrder: base + '/orders?api_key=' + key,
+    updateOrder: (id) => base + '/orders/' + encodeURIComponent(id) + '?api_key=' + key,
+    deleteOrder: (id) => base + '/orders/' + encodeURIComponent(id) + '?api_key=' + key,
+    getOrder: (id) => base + '/orders/' + encodeURIComponent(id) + '?api_key=' + key,
+    getTutor: (id) => base + '/tutors/' + encodeURIComponent(id) + '?api_key=' + key,
+    getCourse: (id) => base + '/courses/' + encodeURIComponent(id) + '?api_key=' + key,
+  };
+})();
 
 // --- Загрузка данных ---
 async function loadCoursesAndTutors() {
+  // Выбираем URL по приоритету: window.API_CONFIG.API_ENDPOINTS если доступен
+  const coursesUrl = (window.API_CONFIG && window.API_CONFIG.API_ENDPOINTS && window.API_CONFIG.API_ENDPOINTS.courses) ? window.API_CONFIG.API_ENDPOINTS.courses : API_ENDPOINTS.courses;
+  const tutorsUrl = (window.API_CONFIG && window.API_CONFIG.API_ENDPOINTS && window.API_CONFIG.API_ENDPOINTS.tutors) ? window.API_CONFIG.API_ENDPOINTS.tutors : API_ENDPOINTS.tutors;
+
+  // Отладочная информация в консоли
+  console.info('[main] Requesting courses from:', coursesUrl);
+  console.info('[main] Requesting tutors from:', tutorsUrl);
+
+  // Создаём / обновляем видимый отладочный блок на странице, чтобы пользователь видел используемые URL
+  try {
+    let debugEl = document.getElementById('apiDebug');
+    if (!debugEl) {
+      debugEl = document.createElement('div');
+      debugEl.id = 'apiDebug';
+      debugEl.style.fontSize = '12px';
+      debugEl.style.padding = '8px 12px';
+      debugEl.style.background = '#fff3cd';
+      debugEl.style.color = '#856404';
+      debugEl.style.border = '1px solid #ffeeba';
+      debugEl.style.margin = '10px auto';
+      debugEl.style.maxWidth = '1200px';
+      debugEl.style.borderRadius = '4px';
+      const container = document.querySelector('.container') || document.body;
+      container.insertBefore(debugEl, container.firstChild);
+    }
+    debugEl.textContent = `API endpoints: courses=${coursesUrl} | tutors=${tutorsUrl}`;
+  } catch (domErr) {
+    console.warn('Could not render apiDebug element', domErr);
+  }
+
+  // Выбираем fetch-обёртку если она доступна
+  const fetchFn = (window.API_CONFIG && typeof window.API_CONFIG.fetchWithHeaders === 'function') ? window.API_CONFIG.fetchWithHeaders : fetch;
+
   try {
     // Попробуем параллельно загрузить оба ресурса
     const [coursesResp, tutorsResp] = await Promise.all([
-      fetch(API_ENDPOINTS.courses),
-      fetch(API_ENDPOINTS.tutors)
+      fetchFn(coursesUrl),
+      fetchFn(tutorsUrl)
     ]);
 
+    // Проверяем HTTP-статусы
     if (!coursesResp.ok || !tutorsResp.ok) {
-      throw new Error('Network response not ok');
+      console.error('One or more API responses not ok', {
+        courses: { status: coursesResp.status, statusText: coursesResp.statusText },
+        tutors: { status: tutorsResp.status, statusText: tutorsResp.statusText }
+      });
+      notify('Ошибка загрузки данных. Проверьте API подключение', 'error');
+      // Очистить данные и обновить отображение
+      coursesData = [];
+      tutorsData = [];
+      displayCourses(1);
+      displayTutors(1);
+      return;
     }
 
-    const coursesJson = await coursesResp.json();
-    const tutorsJson = await tutorsResp.json();
+    // Попытка распарсить JSON
+    let coursesJson, tutorsJson;
+    try {
+      coursesJson = await coursesResp.json();
+    } catch (jsonErr) {
+      console.error('Failed to parse courses JSON', jsonErr);
+      notify('Ошибка обработки данных курсов', 'error');
+      coursesJson = [];
+    }
+    try {
+      tutorsJson = await tutorsResp.json();
+    } catch (jsonErr) {
+      console.error('Failed to parse tutors JSON', jsonErr);
+      notify('Ошибка обработки данных репетиторов', 'error');
+      tutorsJson = [];
+    }
 
     // Ожидаем, что API вернёт массивы
-    coursesData = Array.isArray(coursesJson) ? coursesJson : (coursesJson.data || []);
-    tutorsData = Array.isArray(tutorsJson) ? tutorsJson : (tutorsJson.data || []);
+    coursesData = Array.isArray(coursesJson) ? coursesJson : (coursesJson && coursesJson.data ? coursesJson.data : []);
+    tutorsData = Array.isArray(tutorsJson) ? tutorsJson : (tutorsJson && tutorsJson.data ? tutorsJson.data : []);
 
     displayCourses(1);
     displayTutors(1);
   } catch (err) {
+    // Возможные сетевые ошибки или CORS
     console.error('Error loading data', err);
-    notify('Ошибка загрузки данных', 'error');
+    // Попытка определить возможную CORS/Network проблему
+    if (err instanceof TypeError && err.message && err.message.toLowerCase().includes('failed to fetch')) {
+      console.error('Possible network/CORS error. Check API server CORS settings and network connectivity.', err);
+      notify('Ошибка загрузки данных. Проверьте соединение с API и CORS настройки сервера', 'error');
+    } else {
+      notify('Ошибка загрузки данных', 'error');
+    }
 
     // При ошибке можно очистить таблицы
     coursesData = [];
@@ -85,10 +164,10 @@ function displayCourses(page = 1) {
     return ok;
   });
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE_LOCAL));
   if (currentCoursePage > totalPages) currentCoursePage = totalPages;
 
-  const pageItems = paginate(filtered, currentCoursePage, ITEMS_PER_PAGE);
+  const pageItems = paginate(filtered, currentCoursePage, ITEMS_PER_PAGE_LOCAL);
 
   // Очистка tbody
   tbody.innerHTML = '';
@@ -189,9 +268,9 @@ function displayTutors(page = 1) {
     return ok;
   });
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE_LOCAL));
   if (currentTutorPage > totalPages) currentTutorPage = totalPages;
-  const pageItems = paginate(filtered, currentTutorPage, ITEMS_PER_PAGE);
+  const pageItems = paginate(filtered, currentTutorPage, ITEMS_PER_PAGE_LOCAL);
 
   tbody.innerHTML = '';
 
